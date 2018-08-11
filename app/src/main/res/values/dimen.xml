@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="appbar_minheight">56dp</dimen>
+    <dimen name="buttom_navheight">48dp</dimen>
+    <dimen name="button_litle">25dp</dimen>
+    <dimen name="fab_size">64dp</dimen>
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="card_ele">16dp</dimen>
+    <dimen name="text_margin">20dp</dimen>
+    <dimen name="forward_maxwidth">330dp</dimen>
+    <dimen name="image_height">200dp</dimen>
+
+
+    <dimen name="tip_font">12sp</dimen>
+    <dimen name="favcount_size">8sp</dimen>
+    <dimen name="button_font">14sp</dimen>
+    <dimen name="little_title">16sp</dimen>
+    <dimen name="appbar_font">20sp</dimen>
+    <dimen name="big_title">24sp</dimen>
+
+
+</resources>

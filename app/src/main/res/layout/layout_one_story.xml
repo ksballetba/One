@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/one_story"
+    android:layout_margin="@dimen/card_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondary_text"
+            android:textSize="@dimen/tip_font"
+            android:text="- ONE STORY -"/>
+
+        <TextView
+            android:id="@+id/one_story_title"
+            android:maxWidth="330dp"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/text_margin"
+            android:textColor="@color/primary_text"
+            android:textStyle="bold"
+            android:textSize="@dimen/big_title" />
+
+        <TextView
+            android:id="@+id/one_story_author"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondary_text" />
+
+
+        <ImageView
+            android:id="@+id/one_story_photo"
+            android:background="@color/divider"
+            android:layout_margin="@dimen/text_margin"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_height"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/one_story_digest"
+            android:maxWidth="330dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondary_text" />
+
+        <LinearLayout
+            android:layout_marginTop="50dp"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/text_margin"
+            android:layout_marginBottom="@dimen/text_margin">
+
+            <TextView
+                android:id="@+id/one_story_date"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/one_story_share"
+                android:layout_marginStart="230dp"
+                android:background="@drawable/ic_share_grey_500_18dp"
+                android:layout_width="@dimen/button_litle"
+                android:layout_height="@dimen/button_litle" />
+
+            <FrameLayout
+                android:layout_marginStart="25dp"
+                android:layout_width="35dp"
+                android:layout_height="@dimen/button_litle">
+
+                <ImageView
+                    android:layout_width="@dimen/button_litle"
+                    android:layout_height="@dimen/button_litle"
+                    android:src="@drawable/ic_fav_border_grey_500_18dp"/>
+
+                <TextView
+                    android:id="@+id/one_story_favcount"
+                    android:layout_gravity="end|top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/favcount_size"
+                    android:textStyle="bold"
+                    android:textColor="@color/secondary_text" />
+
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

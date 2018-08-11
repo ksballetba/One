@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include layout="@layout/layout_one_discovery"/>
+    <include layout="@layout/layout_one_story"/>
+    <include layout="@layout/layout_one_serial"/>
+    <include layout="@layout/layout_one_essay"/>
+    <include layout="@layout/layout_one_question"/>
+    <include layout="@layout/layout_one_music"/>
+    <include layout="@layout/layout_one_movie"/>
+
+
+
+</LinearLayout>
