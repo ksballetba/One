@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PagerSnapHelper
@@ -48,6 +49,8 @@ class OneFragment : Fragment() {
 
     lateinit var mOneAdapter:OneAdapter
 
+    lateinit var oneSwipe:SwipeRefreshLayout
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -56,6 +59,7 @@ class OneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        oneSwipe = view.findViewById(R.id.one_swipe)
         init()
     }
 
@@ -68,7 +72,7 @@ class OneFragment : Fragment() {
         mOneAdapter = OneAdapter(mOneList)
         one_recyclerview.itemAnimator = DefaultItemAnimator()
         one_recyclerview.adapter = mOneAdapter
-        one_swipe.setOnRefreshListener {
+        oneSwipe.setOnRefreshListener {
             refreshList()
         }
         if(mOneList.size == 0){
@@ -77,12 +81,12 @@ class OneFragment : Fragment() {
     }
 
     private fun refreshList(){
-        one_swipe.isRefreshing=true
+        oneSwipe.isRefreshing=true
         NetworkManager.getOneIdListObservable().concatMap{
              NetworkManager.getOneDetailObservable(it)
         }.toList()!!.subscribeOn(Schedulers.io()).subscribe({list->
             mOneAdapter.update(list)
-            one_swipe.isRefreshing = false
+            oneSwipe.isRefreshing = false
         })
     }
 

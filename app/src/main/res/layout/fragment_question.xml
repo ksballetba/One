@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/essay_swipe"
+    android:id="@+id/question_swipe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.EssayFragment">
+    tools:context=".ui.fragment.QuestionFragment">
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/essay_recyclerview"
+        android:id="@+id/question_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

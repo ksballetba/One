@@ -14,20 +14,18 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.widget.NestedScrollView
 import android.util.Log
+import android.view.Menu
 import com.ksballetba.one.R
-import com.ksballetba.one.ui.fragment.EssayFragment
-import com.ksballetba.one.ui.fragment.MovieFragment
-import com.ksballetba.one.ui.fragment.MusicFragment
-import com.ksballetba.one.ui.fragment.OneFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuItem
+import com.ksballetba.one.ui.fragment.*
 
 
 class MainActivity : AppCompatActivity() {
 
     val fragmentList = ArrayList<Fragment>()
     lateinit var oneFragment:OneFragment
-    lateinit var essayFragment:EssayFragment
+    lateinit var readFragment: ReadFragment
     lateinit var musicFragment:MusicFragment
     lateinit var movieFragment:MovieFragment
 
@@ -42,11 +40,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(main_toolbar)
         BottomNavigationViewHelper.disableShiftMode(main_bottomnav)
         oneFragment = OneFragment()
-        essayFragment = EssayFragment()
+        readFragment = ReadFragment()
         musicFragment = MusicFragment()
         movieFragment = MovieFragment()
         fragmentList.add(oneFragment)
-        fragmentList.add(essayFragment)
+        fragmentList.add(readFragment)
         fragmentList.add(musicFragment)
         fragmentList.add(movieFragment)
         main_viewpager.adapter = KotlinPagerAdapter(fragmentList,supportFragmentManager)
@@ -80,6 +78,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            R.id.menu_search->{
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }
 
 

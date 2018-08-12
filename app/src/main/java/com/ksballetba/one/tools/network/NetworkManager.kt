@@ -4,9 +4,11 @@ import android.util.Log
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Method
-import com.ksballetba.one.entity.OneDetail
-import com.ksballetba.one.entity.OneidList
+import com.github.kittinunf.result.Result
+import com.google.gson.Gson
+import com.ksballetba.one.entity.*
 import io.reactivex.Observable
+import org.json.JSONObject
 
 class NetworkManager {
 
@@ -16,12 +18,12 @@ class NetworkManager {
         }
         val oneIdlistUrl = host()+"/onelist/idlist"
         val oneDetailUrl = host()+"/onelist" //id/0
-        val readingIdlistUrl = host()+"/channel/reading/more/0" //id
+        val readinglistUrl = host()+"/reading/index"
         val essayDetailUrl = host()+"/essay"//id
         val serialDetailUrl = host()+"/serialcontent"//id
         val questionDetailUrl = host()+"/question"//id
-        val musicIdlistUrl = host()+"/channel/music/more/0"
-        val movieIdlistUrl = host()+"/channel/movie/more/0"
+        val musicIdlistUrl = host()+"/music/idlist/0"
+        val movieItemlistUrl = host()+"/movie/list/0"
         val musicDetailUrl = host()+"/music/detail" //id
         val movieDetailUrl = host()+"/movie" //id/stroy/1/0
         val moviePosterUrl = host()+"/movie/detail" //id
@@ -51,6 +53,38 @@ class NetworkManager {
                     }
         }
 
+        fun getMusicIdList(complete: (res: List<String>?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, musicIdlistUrl)
+                    .responseObject(OneidList.Deserializer()){request, response, result ->
+                        when (result) {
+                            is com.github.kittinunf.result.Result.Failure -> {
+                                complete(null, result.error)
+                            }
+                            is com.github.kittinunf.result.Result.Success -> {
+                                val (res, err) = result
+                                val list = res?.data?.toList()
+                                complete(list,null)
+                            }
+                        }
+                    }
+        }
+
+
+        fun getMusicDetail(id:String,complete: (musicDetail: MusicDetail?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, musicDetailUrl+"/$id")
+                    .responseObject(MusicDetail.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data!!,null)
+                            }
+                        }
+                    }
+        }
+
 
         fun getOneDetail(id:String,complete: (oneDetail: OneDetail?, error: FuelError?) -> Unit){
             FuelManager.instance.request(Method.GET, oneDetailUrl+"/$id/0")
@@ -66,6 +100,48 @@ class NetworkManager {
                         }
                     }
         }
+
+        fun getReadList(complete: (readListStr: String?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, readinglistUrl)
+                    .responseString{request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data,null)
+                            }
+                        }
+                    }
+        }
+
+
+
+        fun getEssayList(response:String?):MutableList<EssayListItem>{
+            val all = JSONObject(response)
+            val dataContent = all.getJSONObject("data")
+            val resContent = dataContent.getJSONArray("essay")
+            val resList = Gson().fromJson(resContent.toString(),Array<EssayListItem>::class.java).toMutableList()
+            return resList
+        }
+
+        fun getSerialList(response:String?):MutableList<SerialListItem>{
+            val all = JSONObject(response)
+            val dataContent = all.getJSONObject("data")
+            val resContent = dataContent.getJSONArray("serial")
+            val resList = Gson().fromJson(resContent.toString(),Array<SerialListItem>::class.java).toMutableList()
+            return resList
+        }
+
+        fun getQuestionList(response:String?):MutableList<QuestionListItem>{
+            val all = JSONObject(response)
+            val dataContent = all.getJSONObject("data")
+            val resContent = dataContent.getJSONArray("question")
+            val resList = Gson().fromJson(resContent.toString(),Array<QuestionListItem>::class.java).toMutableList()
+            return resList
+        }
+
 
 
         fun getOneIdListObservable():Observable<String>{
@@ -84,6 +160,25 @@ class NetworkManager {
             return observable
         }
 
+        fun getMusicIdListObservable():Observable<String>{
+            var observable = Observable.create<String>{
+                NetworkManager.getMusicIdList{res, error ->
+                    if(error==null){
+                        for(i in 0 until res!!.size){
+                            it.onNext(res[i])
+                        }
+                        it.onComplete()
+                    } else{
+                        Log.d("debug","boom")
+                    }
+                }
+            }
+            return observable
+        }
+
+
+
+
         fun getOneDetailObservable(oneId:String):Observable<OneDetail>{
             var observable = Observable.create<OneDetail> {
                 NetworkManager.getOneDetail(oneId){oneDetail, error ->
@@ -99,5 +194,18 @@ class NetworkManager {
             return observable
         }
 
+        fun getMusicDetailObservable(musicId:String):Observable<MusicDetail>{
+            var observable = Observable.create<MusicDetail> {
+                NetworkManager.getMusicDetail(musicId){musicDetail, error ->
+                    if(error==null){
+                        it.onNext(musicDetail!!)
+                        it.onComplete()
+                    } else{
+                        Log.d("debug","boom")
+                    }
+                }
+            }
+            return observable
+        }
     }
 }

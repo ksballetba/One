@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/read_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_margin="5dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/read_item_avatar"
+        android:layout_width="@dimen/read_item_avatar"
+        android:layout_marginStart="@dimen/text_margin"
+        android:layout_height="@dimen/read_item_avatar"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_toRightOf="@id/read_item_avatar"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/read_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:textSize="@dimen/button_font"
+            android:textColor="@color/primary_text"
+            android:textStyle="bold"
+            android:maxLines="1" />
+
+
+        <TextView
+            android:id="@+id/read_item_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:textSize="@dimen/tip_font"
+            android:textColor="@color/secondary_text" />
+
+        <TextView
+            android:id="@+id/read_item_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:textSize="@dimen/tip_font"
+            android:textColor="@color/primary_text" />
+    </LinearLayout>
+
+</RelativeLayout>

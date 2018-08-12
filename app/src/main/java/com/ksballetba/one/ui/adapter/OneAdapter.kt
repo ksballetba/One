@@ -78,7 +78,7 @@ class OneAdapter(val mItems:MutableList<OneDetail>):RecyclerView.Adapter<OneAdap
             Glide.with(mContext!!).load(model.data.contentList[0].imgUrl).into(holder.oneDiscoveryPhoto)
             holder.oneDiscoveryPhotographer.text = "${model.data.contentList[0].title}|${model.data.contentList[0].picInfo}"
             holder.oneDiscoveryForward.text = model.data.contentList[0].forward
-            holder.oneDiscoveryForwardTitle.text = model.data.contentList[0].wordsInfo
+            holder.oneDiscoveryForwardTitle.text = "from${model.data.contentList[0].wordsInfo}"
             holder.oneDiscoveryFavCount.text = model.data.contentList[0].likeCount.toString()
             holder.oneStoryTitle.text = model.data.contentList[1].title
             holder.oneStoryAuthor.text = "文/${model.data.contentList[1].author.userName}"
@@ -134,16 +134,16 @@ class OneAdapter(val mItems:MutableList<OneDetail>):RecyclerView.Adapter<OneAdap
                 holder.oneEssay.visibility = View.GONE
             }
             if(holder.oneSerialTitle.text==""){
-                holder.oneEssay.visibility = View.GONE
+                holder.oneSerial.visibility = View.GONE
             }
             if(holder.oneQuestionTitle.text==""){
-                holder.oneEssay.visibility = View.GONE
+                holder.oneQuestion.visibility = View.GONE
             }
             if(holder.oneMusicTitle.text==""){
-                holder.oneEssay.visibility = View.GONE
+                holder.oneMusic.visibility = View.GONE
             }
             if(holder.oneMovieTitle.text==""){
-                holder.oneEssay.visibility = View.GONE
+                holder.oneMovie.visibility = View.GONE
             }
         }
         val item = mItems[position]

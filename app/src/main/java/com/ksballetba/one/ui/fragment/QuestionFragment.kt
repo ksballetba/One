@@ -12,12 +12,13 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 
 import com.ksballetba.one.R
-import com.ksballetba.one.entity.EssayListItem
+import com.ksballetba.one.entity.QuestionListItem
 import com.ksballetba.one.tools.network.NetworkManager
-import com.ksballetba.one.ui.adapter.EssayAdapter
-import kotlinx.android.synthetic.main.fragment_essay.*
+import com.ksballetba.one.ui.adapter.QuestionAdapter
+import kotlinx.android.synthetic.main.fragment_question.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.support.v4.onUiThread
+import org.jetbrains.anko.support.v4.uiThread
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,16 +29,16 @@ private const val ARG_PARAM2 = "param2"
  * A simple [Fragment] subclass.
  *
  */
-class EssayFragment : Fragment() {
+class QuestionFragment : Fragment() {
 
-    var mEssayItemList=ArrayList<EssayListItem>()
+    var mQuestionItemList=ArrayList<QuestionListItem>()
+    lateinit var mQuestionAdapter:QuestionAdapter
 
-    lateinit var mEssayAdapter:EssayAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_essay, container, false)
+        return inflater.inflate(R.layout.fragment_question, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,31 +49,36 @@ class EssayFragment : Fragment() {
     private fun init(){
         val myLayoutManager = LinearLayoutManager(activity)
         myLayoutManager.orientation = LinearLayout.VERTICAL
-        essay_recyclerview.layoutManager = myLayoutManager
-        mEssayAdapter = EssayAdapter(mEssayItemList){
+        question_recyclerview.layoutManager = myLayoutManager
+        mQuestionAdapter = QuestionAdapter(mQuestionItemList){
 
         }
-        essay_recyclerview.itemAnimator = DefaultItemAnimator()
-        essay_recyclerview.adapter = mEssayAdapter
-        essay_swipe.setOnRefreshListener {
+        question_recyclerview.itemAnimator = DefaultItemAnimator()
+        question_recyclerview.adapter = mQuestionAdapter
+        question_swipe.setOnRefreshListener {
             refreshList()
         }
-        if(mEssayItemList.size == 0){
+        if(mQuestionItemList.size == 0){
             refreshList()
         }
     }
 
     private fun refreshList(){
-        essay_swipe.isRefreshing = true
-      doAsync {
-          NetworkManager.getReadList { readListStr,error->
-              if(error==null){
-                  uiThread {
-                      mEssayAdapter.update(NetworkManager.getEssayList(readListStr))
-                      essay_swipe.isRefreshing = false
-                  }
-              }
-          }
-      }
+        question_swipe.isRefreshing = true
+        doAsync {
+            NetworkManager.getReadList { readListStr, error ->
+                if(error==null){
+                    onUiThread {
+                        mQuestionAdapter.update(NetworkManager.getQuestionList(readListStr))
+                        question_swipe.isRefreshing = false
+                    }
+                } else{
+                    Log.d("debug","boom")
+                }
+
+            }
+        }
     }
+
+
 }

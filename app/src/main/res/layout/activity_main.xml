@@ -18,7 +18,17 @@
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|enterAlways|snap">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/one_logo"
+                android:src="@drawable/one_logo"
+                android:layout_gravity="center"/>
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
@@ -32,9 +42,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-
-
-
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/main_bottomnav"
         android:layout_width="match_parent"
@@ -42,6 +49,8 @@
         android:layout_gravity="bottom"
         app:layout_behavior=".ui.behavior.BottomNavigationBehavior"
         android:background="@color/icons"
+        app:itemIconTint="@drawable/bnv_selector"
+        app:itemTextColor="@drawable/bnv_selector"
         app:elevation="@dimen/card_ele"
         app:menu="@menu/bottom_menu">
 

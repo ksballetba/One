@@ -17,6 +17,7 @@
     <dimen name="little_title">16sp</dimen>
     <dimen name="appbar_font">20sp</dimen>
     <dimen name="big_title">24sp</dimen>
+    <dimen name="read_item_avatar">60dp</dimen>
 
 
 </resources>

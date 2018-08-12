@@ -5,19 +5,20 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 
 import com.ksballetba.one.R
-import com.ksballetba.one.entity.EssayListItem
+import com.ksballetba.one.R.id.serial_recyclerview
+import com.ksballetba.one.entity.SerialListItem
 import com.ksballetba.one.tools.network.NetworkManager
-import com.ksballetba.one.ui.adapter.EssayAdapter
-import kotlinx.android.synthetic.main.fragment_essay.*
+import com.ksballetba.one.ui.adapter.SerialAdapter
+import kotlinx.android.synthetic.main.fragment_serial.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.support.v4.onUiThread
+import org.jetbrains.anko.support.v4.uiThread
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,16 +29,16 @@ private const val ARG_PARAM2 = "param2"
  * A simple [Fragment] subclass.
  *
  */
-class EssayFragment : Fragment() {
+class SerialFragment : Fragment() {
 
-    var mEssayItemList=ArrayList<EssayListItem>()
+    var mSerialItemList=ArrayList<SerialListItem>()
 
-    lateinit var mEssayAdapter:EssayAdapter
+    lateinit var mSerialAdapter:SerialAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_essay, container, false)
+        return inflater.inflate(R.layout.fragment_serial, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,34 +46,36 @@ class EssayFragment : Fragment() {
         init()
     }
 
+
     private fun init(){
         val myLayoutManager = LinearLayoutManager(activity)
         myLayoutManager.orientation = LinearLayout.VERTICAL
-        essay_recyclerview.layoutManager = myLayoutManager
-        mEssayAdapter = EssayAdapter(mEssayItemList){
+        serial_recyclerview.layoutManager = myLayoutManager
+        mSerialAdapter = SerialAdapter(mSerialItemList){
 
         }
-        essay_recyclerview.itemAnimator = DefaultItemAnimator()
-        essay_recyclerview.adapter = mEssayAdapter
-        essay_swipe.setOnRefreshListener {
+        serial_recyclerview.itemAnimator = DefaultItemAnimator()
+        serial_recyclerview.adapter = mSerialAdapter
+        serial_swipe.setOnRefreshListener {
             refreshList()
         }
-        if(mEssayItemList.size == 0){
+        if(mSerialItemList.size == 0){
             refreshList()
         }
     }
 
     private fun refreshList(){
-        essay_swipe.isRefreshing = true
-      doAsync {
-          NetworkManager.getReadList { readListStr,error->
-              if(error==null){
-                  uiThread {
-                      mEssayAdapter.update(NetworkManager.getEssayList(readListStr))
-                      essay_swipe.isRefreshing = false
-                  }
-              }
-          }
-      }
+        serial_swipe.isRefreshing = true
+        doAsync {
+            NetworkManager.getReadList { readListStr, error->
+                if(error==null){
+                    onUiThread {
+                        mSerialAdapter.update(NetworkManager.getSerialList(readListStr))
+                        serial_swipe.isRefreshing = false
+                    }
+                }
+            }
+        }
     }
+
 }
