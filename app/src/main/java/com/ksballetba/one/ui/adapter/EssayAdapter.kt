@@ -60,5 +60,10 @@ class EssayAdapter(val mItems:MutableList<EssayListItem>,internal val didSelecte
         notifyDataSetChanged()
     }
 
+    fun add(addData:List<EssayListItem>){
+        mItems.addAll(addData)
+        notifyDataSetChanged()
+    }
+
 }
 

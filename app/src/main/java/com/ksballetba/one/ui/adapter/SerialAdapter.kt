@@ -9,11 +9,8 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.ksballetba.one.R
-import com.ksballetba.one.entity.EssayListItem
-import com.ksballetba.one.entity.OneDetail
 import com.ksballetba.one.entity.SerialListItem
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.layout_read_ltem.view.*
 
 class SerialAdapter(val mItems:MutableList<SerialListItem>,internal val didSelectedAtPos:(idx:Int)->Unit): RecyclerView.Adapter<SerialAdapter.ViewHolder>() {
     internal var mContext:Context? = null
@@ -36,9 +33,9 @@ class SerialAdapter(val mItems:MutableList<SerialListItem>,internal val didSelec
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         fun bind(model: SerialListItem) {
-            Glide.with(mContext!!).load(model.author.webUrl).into(holder.readItemAvatar)
+            Glide.with(mContext!!).load(model.authorList[0].webUrl).into(holder.readItemAvatar)
             holder.readItemTitle.text = model.title
-            holder.readItemAuthor.text = model.author.userName
+            holder.readItemAuthor.text = model.authorList[0].userName
             holder.readItemGuide.text = model.excerpt
             with(holder.readItem){
                 setOnClickListener {
@@ -58,6 +55,11 @@ class SerialAdapter(val mItems:MutableList<SerialListItem>,internal val didSelec
     fun update(newData:List<SerialListItem>){
         mItems.clear()
         mItems.addAll(newData)
+        notifyDataSetChanged()
+    }
+
+    fun add(addData:List<SerialListItem>){
+        mItems.addAll(addData)
         notifyDataSetChanged()
     }
 

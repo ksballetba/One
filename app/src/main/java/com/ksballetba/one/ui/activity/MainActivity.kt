@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         fragmentList.add(readFragment)
         fragmentList.add(musicFragment)
         fragmentList.add(movieFragment)
+        main_viewpager.offscreenPageLimit = 4
         main_viewpager.adapter = KotlinPagerAdapter(fragmentList,supportFragmentManager)
         main_bottomnav.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }

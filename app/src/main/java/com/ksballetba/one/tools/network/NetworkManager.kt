@@ -9,6 +9,12 @@ import com.google.gson.Gson
 import com.ksballetba.one.entity.*
 import io.reactivex.Observable
 import org.json.JSONObject
+import org.jsoup.safety.Whitelist
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import java.util.Collections.replaceAll
+
+
 
 class NetworkManager {
 
@@ -18,12 +24,12 @@ class NetworkManager {
         }
         val oneIdlistUrl = host()+"/onelist/idlist"
         val oneDetailUrl = host()+"/onelist" //id/0
-        val readinglistUrl = host()+"/reading/index"
+        val readinglistUrl = host()+"/reading/index" //page
         val essayDetailUrl = host()+"/essay"//id
         val serialDetailUrl = host()+"/serialcontent"//id
         val questionDetailUrl = host()+"/question"//id
-        val musicIdlistUrl = host()+"/music/idlist/0"
-        val movieItemlistUrl = host()+"/movie/list/0"
+        val musicIdlistUrl = host()+"/music/idlist" //page
+        val movieItemlistUrl = host()+"/movie/list" //page
         val musicDetailUrl = host()+"/music/detail" //id
         val movieDetailUrl = host()+"/movie" //id/stroy/1/0
         val moviePosterUrl = host()+"/movie/detail" //id
@@ -53,8 +59,8 @@ class NetworkManager {
                     }
         }
 
-        fun getMusicIdList(complete: (res: List<String>?, error: FuelError?) -> Unit){
-            FuelManager.instance.request(Method.GET, musicIdlistUrl)
+        fun getMusicIdList(page:String,complete: (res: List<String>?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, musicIdlistUrl+"/$page")
                     .responseObject(OneidList.Deserializer()){request, response, result ->
                         when (result) {
                             is com.github.kittinunf.result.Result.Failure -> {
@@ -64,6 +70,56 @@ class NetworkManager {
                                 val (res, err) = result
                                 val list = res?.data?.toList()
                                 complete(list,null)
+                            }
+                        }
+                    }
+        }
+
+        fun getMovieIdList(page:String,complete: (res: List<String>?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, movieItemlistUrl+"/$page")
+                    .responseObject(MovieListItem.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(res,err) = result
+                                val list = mutableListOf<String>()
+                                for (i in 0 until res?.data?.size!!){
+                                    list.add(res.data[i].id)
+                                }
+                                complete(list,null)
+                            }
+                        }
+                    }
+        }
+
+        fun getMoviePosterDetail(id:String,complete: (moviePosterDetail: MoviePosterDetail?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, moviePosterUrl+"/$id")
+                    .responseObject(MoviePosterDetail.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data,null)
+                            }
+                        }
+                    }
+        }
+
+
+        fun getMovieDetail(id:String,complete:(movieDetail: MovieDetail?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, movieDetailUrl+"/$id/story/1/0")
+                    .responseObject(MovieDetail.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data,null)
                             }
                         }
                     }
@@ -101,8 +157,54 @@ class NetworkManager {
                     }
         }
 
-        fun getReadList(complete: (readListStr: String?, error: FuelError?) -> Unit){
-            FuelManager.instance.request(Method.GET, readinglistUrl)
+        fun getEssayDetail(id:String,complete: (essayDetail: EssayDetail?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, essayDetailUrl+"/$id")
+                    .responseObject(EssayDetail.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data!!,null)
+                            }
+                        }
+                    }
+        }
+
+        fun getSerialDetail(id:String,complete: (serialDetail: SerialDetail?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, serialDetailUrl+"/$id")
+                    .responseObject(SerialDetail.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data!!,null)
+                            }
+                        }
+                    }
+        }
+
+        fun getQuestionDetail(id:String,complete: (question: QuestionDetail?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, questionDetailUrl+"/$id")
+                    .responseObject(QuestionDetail.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data!!,null)
+                            }
+                        }
+                    }
+        }
+
+
+        fun getReadList(page:String,complete: (readListStr: String?, error: FuelError?) -> Unit){
+            FuelManager.instance.request(Method.GET, readinglistUrl+"/$page")
                     .responseString{request, response, result ->
                         when(result){
                             is Result.Failure->{
@@ -120,25 +222,55 @@ class NetworkManager {
 
         fun getEssayList(response:String?):MutableList<EssayListItem>{
             val all = JSONObject(response)
-            val dataContent = all.getJSONObject("data")
-            val resContent = dataContent.getJSONArray("essay")
-            val resList = Gson().fromJson(resContent.toString(),Array<EssayListItem>::class.java).toMutableList()
+            val dataContent = all.getJSONArray("data")
+            val resList = mutableListOf<EssayListItem>()
+            for(i in 0 until dataContent.length()){
+                val dayList = dataContent.getJSONObject(i).getJSONArray("items")
+                for(i in 0 until dayList.length()){
+                    if(dayList.getJSONObject(i).getInt("type")==1){
+                        val resItemStr =  dayList.getJSONObject(i).getJSONObject("content")
+                        val resItem = Gson().fromJson(resItemStr.toString(),EssayListItem::class.java)
+                        resList.add(resItem)
+                    }
+                }
+
+            }
             return resList
         }
 
         fun getSerialList(response:String?):MutableList<SerialListItem>{
             val all = JSONObject(response)
-            val dataContent = all.getJSONObject("data")
-            val resContent = dataContent.getJSONArray("serial")
-            val resList = Gson().fromJson(resContent.toString(),Array<SerialListItem>::class.java).toMutableList()
+            val dataContent = all.getJSONArray("data")
+            val resList = mutableListOf<SerialListItem>()
+            for(i in 0 until dataContent.length()){
+                val dayList = dataContent.getJSONObject(i).getJSONArray("items")
+                for(i in 0 until dayList.length()){
+                    if(dayList.getJSONObject(i).getInt("type")==2){
+                        val resItemStr =  dayList.getJSONObject(i).getJSONObject("content")
+                        val resItem = Gson().fromJson(resItemStr.toString(),SerialListItem::class.java)
+                        resList.add(resItem)
+                    }
+                }
+
+            }
             return resList
         }
 
         fun getQuestionList(response:String?):MutableList<QuestionListItem>{
             val all = JSONObject(response)
-            val dataContent = all.getJSONObject("data")
-            val resContent = dataContent.getJSONArray("question")
-            val resList = Gson().fromJson(resContent.toString(),Array<QuestionListItem>::class.java).toMutableList()
+            val dataContent = all.getJSONArray("data")
+            val resList = mutableListOf<QuestionListItem>()
+            for(i in 0 until dataContent.length()){
+                val dayList = dataContent.getJSONObject(i).getJSONArray("items")
+                for(i in 0 until dayList.length()){
+                    if(dayList.getJSONObject(i).getInt("type")==3){
+                        val resItemStr =  dayList.getJSONObject(i).getJSONObject("content")
+                        val resItem = Gson().fromJson(resItemStr.toString(),QuestionListItem::class.java)
+                        resList.add(resItem)
+                    }
+                }
+
+            }
             return resList
         }
 
@@ -160,9 +292,25 @@ class NetworkManager {
             return observable
         }
 
-        fun getMusicIdListObservable():Observable<String>{
+        fun getMusicIdListObservable(page: String):Observable<String>{
             var observable = Observable.create<String>{
-                NetworkManager.getMusicIdList{res, error ->
+                NetworkManager.getMusicIdList(page){res, error ->
+                    if(error==null){
+                        for(i in 0 until res!!.size){
+                            it.onNext(res[i])
+                        }
+                        it.onComplete()
+                    } else{
+                        Log.d("debug","boom")
+                    }
+                }
+            }
+            return observable
+        }
+
+        fun getMovieIdListObservable(page: String):Observable<String>{
+            var observable = Observable.create<String>{
+                NetworkManager.getMovieIdList(page) { res, error ->
                     if(error==null){
                         for(i in 0 until res!!.size){
                             it.onNext(res[i])
@@ -207,5 +355,34 @@ class NetworkManager {
             }
             return observable
         }
+
+        fun getMoviePosterDetailObservable(movieId:String):Observable<MoviePosterDetail>{
+            var observable = Observable.create<MoviePosterDetail> {
+                NetworkManager.getMoviePosterDetail(movieId){moviePosterDetail, error ->
+                    if(error==null){
+                        it.onNext(moviePosterDetail!!)
+                        it.onComplete()
+                    } else{
+                        Log.d("debug","boom")
+                    }
+                }
+            }
+            return observable
+        }
+
+        fun getMovieDetailObservable(movieId:String):Observable<MovieDetail>{
+            var observable = Observable.create<MovieDetail> {
+                NetworkManager.getMovieDetail(movieId){movieDetail, error ->
+                    if(error==null){
+                        it.onNext(movieDetail!!)
+                        it.onComplete()
+                    } else{
+                        Log.d("debug","boom")
+                    }
+                }
+            }
+            return observable
+        }
+
     }
 }

@@ -11,6 +11,8 @@
     <color name="divider">#BDBDBD</color>
     <color name="icon_tint">#455765</color>
     <color name="transbg">#32000000</color>
+    <color name="void_bg">#00000000</color>
+    <color name="footer_color">#03A9F4</color>
 
 
 

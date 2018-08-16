@@ -1,6 +1,7 @@
 package com.ksballetba.one.ui.adapter
 
 import android.content.Context
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ class MusicAdapter(val mItems:MutableList<MusicDetail>,internal val didSelectedA
 
     class ViewHolder(view: View):RecyclerView.ViewHolder(view){
         var musicItem = view.findViewById<LinearLayout>(R.id.music_item)
+        var musicItemCardView = view.findViewById<CardView>(R.id.music_item_cardview)
         var musicItemImage = view.findViewById<ImageView>(R.id.music_item_image)
         var musicItemAuthor = view.findViewById<TextView>(R.id.music_item_auhtor)
         var musicItemTitle = view.findViewById<TextView>(R.id.music_item_title)
@@ -36,7 +38,7 @@ class MusicAdapter(val mItems:MutableList<MusicDetail>,internal val didSelectedA
             Glide.with(mContext!!).load(model.data.cover).into(holder.musicItemImage)
             holder.musicItemAuthor.text = "${model.data.author.userName}  "
             holder.musicItemTitle.text = model.data.storySummary
-            with(holder.musicItem){
+            with(holder.musicItemCardView){
                 setOnClickListener {
                     didSelectedAtPos(position)
                 }
@@ -53,6 +55,11 @@ class MusicAdapter(val mItems:MutableList<MusicDetail>,internal val didSelectedA
     fun update(newData:MutableList<MusicDetail>){
         mItems.clear()
         mItems.addAll(newData)
+        notifyDataSetChanged()
+    }
+
+    fun add(addData:List<MusicDetail>){
+        mItems.addAll(addData)
         notifyDataSetChanged()
     }
 }

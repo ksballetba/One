@@ -47,7 +47,6 @@ class ReadFragment : Fragment() {
         fragmentList.add(serialFragment)
         fragmentList.add(questionFragment)
         read_viewpager.adapter = KotlinPagerAdapter(fragmentList,childFragmentManager)
-        read_viewpager.offscreenPageLimit = 3
         read_tablayout.setupWithViewPager(read_viewpager)
         read_tablayout.getTabAt(0)?.text = "阅读"
         read_tablayout.getTabAt(1)?.text = "连载"

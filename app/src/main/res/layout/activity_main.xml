@@ -45,7 +45,7 @@
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/main_bottomnav"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/bottom_navheight"
         android:layout_gravity="bottom"
         app:layout_behavior=".ui.behavior.BottomNavigationBehavior"
         android:background="@color/icons"

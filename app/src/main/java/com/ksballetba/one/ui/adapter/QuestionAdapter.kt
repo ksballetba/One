@@ -61,4 +61,8 @@ class QuestionAdapter(val mItems:MutableList<QuestionListItem>,internal val didS
         notifyDataSetChanged()
     }
 
+    fun add(addData:List<QuestionListItem>){
+        mItems.addAll(addData)
+        notifyDataSetChanged()
+    }
 }

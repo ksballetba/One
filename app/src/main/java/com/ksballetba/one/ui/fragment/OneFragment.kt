@@ -1,6 +1,7 @@
 package com.ksballetba.one.ui.fragment
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
@@ -15,11 +16,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
+import com.kingja.loadsir.callback.Callback
+import com.kingja.loadsir.core.LoadService
+import com.kingja.loadsir.core.LoadSir
 
 import com.ksballetba.one.R
+import com.ksballetba.one.entity.MovieDetail
 import com.ksballetba.one.entity.OneDetail
 import com.ksballetba.one.tools.network.NetworkManager
+import com.ksballetba.one.ui.activity.EssayDetailActivity
+import com.ksballetba.one.ui.activity.MovieDetailActivity
+import com.ksballetba.one.ui.activity.MusicDetailActivity
 import com.ksballetba.one.ui.adapter.OneAdapter
+import com.ksballetba.one.ui.callback.TimeoutCallback
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.functions.Action
@@ -45,16 +56,18 @@ private const val ARG_PARAM2 = "param2"
  */
 class OneFragment : Fragment() {
 
-    var mOneList = ArrayList<OneDetail>()
+    var mOneList = mutableListOf<OneDetail>()
 
     lateinit var mOneAdapter:OneAdapter
 
-    lateinit var oneSwipe:SwipeRefreshLayout
+    lateinit var oneSwipe:SmartRefreshLayout
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_one, container, false)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,11 +82,76 @@ class OneFragment : Fragment() {
         one_recyclerview.layoutManager = myLayoutManager
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(one_recyclerview)
-        mOneAdapter = OneAdapter(mOneList)
+        mOneAdapter = OneAdapter(mOneList){idx, viewName ->
+            when(viewName){
+                "storyClick"->{
+                    val intent = Intent(activity,EssayDetailActivity::class.java)
+                    intent.putExtra("essay_id",mOneList[idx].data.contentList[1].itemId)
+                    intent.putExtra("serial_id","null")
+                    intent.putExtra("question_id","null")
+                    startActivity(intent)
+                }
+                "essayClick"->{
+                    val intent = Intent(activity,EssayDetailActivity::class.java)
+                    for(i in 2 until mOneList[idx].data.contentList.size){
+                        if(mOneList[idx].data.contentList[i].category.toInt()==1){
+                            intent.putExtra("essay_id",mOneList[idx].data.contentList[i].itemId)
+                            intent.putExtra("serial_id","null")
+                            intent.putExtra("question_id","null")
+                            startActivity(intent)
+                        }
+                    }
+                }
+                "serialClick"->{
+                    val intent = Intent(activity,EssayDetailActivity::class.java)
+                    for(i in mOneList[idx].data.contentList){
+                        if(i.category.toInt()==2){
+                            intent.putExtra("essay_id","null")
+                            intent.putExtra("serial_id",i.itemId)
+                            intent.putExtra("question_id","null")
+                            startActivity(intent)
+                        }
+                    }
+                }
+                "questionClick"->{
+                    val intent = Intent(activity,EssayDetailActivity::class.java)
+                    for(i in mOneList[idx].data.contentList){
+                        if(i.category.toInt()==3){
+                            intent.putExtra("essay_id","null")
+                            intent.putExtra("serial_id","null")
+                            intent.putExtra("question_id",i.itemId)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                "musicClick"->{
+                    val intent = Intent(activity,MusicDetailActivity::class.java)
+                    for(i in mOneList[idx].data.contentList){
+                        if(i.category.toInt()==4){
+                            intent.putExtra("music_id",i.itemId)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                "movieClick"->{
+                    val intent = Intent(activity,MovieDetailActivity::class.java)
+                    for(i in mOneList[idx].data.contentList){
+                        if(i.category.toInt()==5){
+                            intent.putExtra("movie_id",i.itemId)
+                            startActivity(intent)
+                        }
+                    }
+                }
+            }
+        }
         one_recyclerview.itemAnimator = DefaultItemAnimator()
         one_recyclerview.adapter = mOneAdapter
         oneSwipe.setOnRefreshListener {
-            refreshList()
+            if(mOneList.size==0){
+                refreshList()
+            }else{
+                oneSwipe.finishRefresh(2000)
+            }
         }
         if(mOneList.size == 0){
             refreshList()
@@ -81,12 +159,13 @@ class OneFragment : Fragment() {
     }
 
     private fun refreshList(){
-        oneSwipe.isRefreshing=true
+        oneSwipe.autoRefresh()
         NetworkManager.getOneIdListObservable().concatMap{
              NetworkManager.getOneDetailObservable(it)
         }.toList()!!.subscribeOn(Schedulers.io()).subscribe({list->
-            mOneAdapter.update(list)
-            oneSwipe.isRefreshing = false
+            mOneList = list
+            mOneAdapter.update(mOneList)
+            oneSwipe.finishRefresh()
         })
     }
 

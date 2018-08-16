@@ -14,14 +14,18 @@ import com.bumptech.glide.Glide
 import com.ksballetba.one.R
 import kotlinx.android.synthetic.main.layout_one_discovery.view.*
 
-class OneAdapter(val mItems:MutableList<OneDetail>):RecyclerView.Adapter<OneAdapter.ViewHolder>(){
+class OneAdapter(val mItems:MutableList<OneDetail>,internal val didSelectedAtPos:(idx:Int,viewName:String)->Unit):RecyclerView.Adapter<OneAdapter.ViewHolder>(){
     internal var mContext: Context? = null
+
+
+
     class ViewHolder(view:View):RecyclerView.ViewHolder(view){
         var oneDiscoveryPhoto = view.findViewById<ImageView>(R.id.one_discovery_photo)
         var oneDiscoveryPhotographer = view.findViewById<TextView>(R.id.one_discovery_photographer)
         var oneDiscoveryForward = view.findViewById<TextView>(R.id.one_discovery_forward)
         var oneDiscoveryForwardTitle = view.findViewById<TextView>(R.id.one_discovery_forwardtitle)
         var oneDiscoveryFavCount= view.findViewById<TextView>(R.id.one_discovery_favcount)
+        var oneStory = view.findViewById<CardView>(R.id.one_story)
         var oneStoryTitle = view.findViewById<TextView>(R.id.one_story_title)
         var oneStoryAuthor = view.findViewById<TextView>(R.id.one_story_author)
         var oneStoryPhoto = view.findViewById<ImageView>(R.id.one_story_photo)
@@ -145,6 +149,37 @@ class OneAdapter(val mItems:MutableList<OneDetail>):RecyclerView.Adapter<OneAdap
             if(holder.oneMovieTitle.text==""){
                 holder.oneMovie.visibility = View.GONE
             }
+
+            with(holder.oneStory){
+                setOnClickListener {
+                    didSelectedAtPos(position,"storyClick")
+                }
+            }
+            with(holder.oneEssay){
+                setOnClickListener {
+                    didSelectedAtPos(position,"essayClick")
+                }
+            }
+            with(holder.oneSerial){
+                setOnClickListener {
+                    didSelectedAtPos(position,"serialClick")
+                }
+            }
+            with(holder.oneQuestion){
+                setOnClickListener {
+                    didSelectedAtPos(position,"questionClick")
+                }
+            }
+            with(holder.oneMusic){
+                setOnClickListener {
+                    didSelectedAtPos(position,"musicClick")
+                }
+            }
+            with(holder.oneMovie){
+                setOnClickListener {
+                    didSelectedAtPos(position,"movieClick")
+                }
+            }
         }
         val item = mItems[position]
         bind(item)
@@ -159,4 +194,6 @@ class OneAdapter(val mItems:MutableList<OneDetail>):RecyclerView.Adapter<OneAdap
         mItems.addAll(newData)
         notifyDataSetChanged()
     }
+
+
 }

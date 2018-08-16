@@ -56,34 +56,34 @@
             android:maxWidth="330dp"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
+            android:layout_marginBottom="50dp"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_text" />
 
-        <LinearLayout
-            android:layout_marginTop="50dp"
-            android:orientation="horizontal"
+        <RelativeLayout
             android:layout_gravity="end"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/text_margin"
-            android:layout_marginBottom="@dimen/text_margin">
+            android:layout_margin="@dimen/text_margin">
 
             <TextView
                 android:id="@+id/one_essay_date"
-                android:layout_marginStart="@dimen/text_margin"
-                android:text="今天"
+                android:layout_gravity="start"
+                android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <Button
+                android:layout_toLeftOf="@+id/layout_fav"
                 android:id="@+id/one_essay_share"
-                android:layout_marginStart="230dp"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/ic_share_grey_500_18dp"
                 android:layout_width="@dimen/button_litle"
                 android:layout_height="@dimen/button_litle" />
 
             <FrameLayout
-                android:layout_marginStart="25dp"
+                android:id="@+id/layout_fav"
+                android:layout_alignParentEnd="true"
                 android:layout_width="40dp"
                 android:layout_height="@dimen/button_litle">
 
@@ -103,6 +103,6 @@
                     android:textColor="@color/secondary_text" />
 
             </FrameLayout>
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
