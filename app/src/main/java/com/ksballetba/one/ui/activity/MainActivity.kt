@@ -1,6 +1,8 @@
 package com.ksballetba.one.ui.activity
 
+import android.animation.LayoutTransition
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -12,13 +14,20 @@ import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.MenuItemCompat
 import android.support.v4.widget.NestedScrollView
 import android.util.Log
 import android.view.Menu
 import com.ksballetba.one.R
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuItem
+import android.view.View
+import android.support.v7.widget.SearchView
+import android.view.KeyEvent
+import android.widget.ImageView
 import com.ksballetba.one.ui.fragment.*
+import android.widget.LinearLayout
+import org.jetbrains.anko.imageResource
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         init()
-
     }
 
     private fun init(){
@@ -79,18 +87,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar_menu,menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId){
-            R.id.menu_search->{
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (isTaskRoot) {
+                moveTaskToBack(false)
+                return true
+            } else {
+                return super.onKeyDown(keyCode, event)
 
             }
         }
-        return super.onOptionsItemSelected(item)
+        return super.onKeyDown(keyCode, event)
     }
 }
 
@@ -119,6 +126,7 @@ class BottomNavigationViewHelper{
 
         }
     }
+
 }
 
 class KotlinPagerAdapter(var mList : List<Fragment>, fm: FragmentManager?) : FragmentStatePagerAdapter(fm) {

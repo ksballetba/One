@@ -14,13 +14,12 @@
             android:id="@+id/main_toolbar"
             android:background="@color/icons"
             android:layout_width="match_parent"
+            app:title=" "
+            app:contentInsetStartWithNavigation="0dp"
             android:layout_height="?attr/actionBarSize"
             android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|enterAlways|snap">
-
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -29,7 +28,10 @@
                 android:src="@drawable/one_logo"
                 android:layout_gravity="center"/>
 
+
         </android.support.v7.widget.Toolbar>
+
+
 
     </android.support.design.widget.AppBarLayout>
 

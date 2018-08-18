@@ -75,9 +75,7 @@ class QuestionFragment : Fragment() {
         if(mQuestionItemList.size == 0){
             refreshList()
         }
-        if (mQuestionItemList.size<9){
-            loadMore()
-        }
+
     }
 
     private fun initRefreshLayout(){
@@ -109,6 +107,9 @@ class QuestionFragment : Fragment() {
                     uiThread {
                         mQuestionItemList = NetworkManager.getQuestionList(readListStr)
                         mQuestionAdapter.update(mQuestionItemList)
+                        if (mQuestionItemList.size<9){
+                            loadMore()
+                        }
                         questionSwipe.finishRefresh()
                     }
                 } else{

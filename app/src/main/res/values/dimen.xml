@@ -10,6 +10,7 @@
     <dimen name="cover_size">100dp</dimen>
     <dimen name="forward_maxwidth">330dp</dimen>
     <dimen name="image_height">200dp</dimen>
+    <dimen name="searchview_inset">10dp</dimen>
 
 
     <dimen name="tip_font">12sp</dimen>

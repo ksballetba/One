@@ -73,9 +73,7 @@ class SerialFragment : Fragment() {
         if(mSerialItemList.size == 0){
             refreshList()
         }
-        if (mSerialItemList.size<9){
-            loadMore()
-        }
+
     }
 
     private fun initRefreshLayout(){
@@ -107,6 +105,9 @@ class SerialFragment : Fragment() {
                     uiThread {
                         mSerialItemList = NetworkManager.getSerialList(readListStr)
                         mSerialAdapter.update(mSerialItemList)
+                        if (mSerialItemList.size<9){
+                            loadMore()
+                        }
                         serialSwipe.finishRefresh()
                     }
                 }

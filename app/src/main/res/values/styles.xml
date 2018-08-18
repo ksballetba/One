@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="searchViewStyle">@style/Widget.SearchView</item>
     </style>
 
     <style name="ToolbarStyle" parent="Base.Widget.AppCompat.Toolbar">
@@ -24,6 +25,16 @@
         <item name="android:textColor">@color/icons</item>
         <item name="android:textStyle">normal</item>
     </style>
+
+    <style name="Widget.SearchView" parent="Widget.AppCompat.SearchView">
+        <!--修改搜索框提示文字-->
+        <item name="defaultQueryHint">写下你想寻找的...</item>
+        <!--修改打开搜索框的搜索按钮的图标-->
+        <item name="searchIcon">@null</item>
+        <!--修改搜索框左边的搜索按钮图标-->
+        <item name="searchHintIcon">@null</item>
+    </style>
+
 
 
 </resources>

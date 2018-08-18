@@ -73,9 +73,7 @@ class EssayFragment : Fragment() {
         if(mEssayItemList.size == 0){
             refreshList()
         }
-        if(mEssayItemList.size<9){
-            loadMore()
-        }
+
     }
 
     private fun initRefreshLayout(){
@@ -109,6 +107,9 @@ class EssayFragment : Fragment() {
                       mEssayItemList = NetworkManager.getEssayList(readListStr)
                       mEssayAdapter.update(mEssayItemList)
                       essaySwipe.finishRefresh()
+                      if(mEssayItemList.size<9){
+                          loadMore()
+                      }
                   }
               }
           }

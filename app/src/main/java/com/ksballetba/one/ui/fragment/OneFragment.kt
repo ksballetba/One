@@ -3,47 +3,25 @@ package com.ksballetba.one.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.widget.NestedScrollView
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PagerSnapHelper
-import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
-import com.kingja.loadsir.callback.Callback
-import com.kingja.loadsir.core.LoadService
-import com.kingja.loadsir.core.LoadSir
 
 import com.ksballetba.one.R
-import com.ksballetba.one.entity.MovieDetail
 import com.ksballetba.one.entity.OneDetail
 import com.ksballetba.one.tools.network.NetworkManager
 import com.ksballetba.one.ui.activity.EssayDetailActivity
 import com.ksballetba.one.ui.activity.MovieDetailActivity
 import com.ksballetba.one.ui.activity.MusicDetailActivity
 import com.ksballetba.one.ui.adapter.OneAdapter
-import com.ksballetba.one.ui.callback.TimeoutCallback
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.functions.Action
-import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_one.*
-import kotlinx.android.synthetic.main.layout_one_item.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.support.v4.toast
-import org.jetbrains.anko.uiThread
-import java.util.*
-import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -147,11 +125,7 @@ class OneFragment : Fragment() {
         one_recyclerview.itemAnimator = DefaultItemAnimator()
         one_recyclerview.adapter = mOneAdapter
         oneSwipe.setOnRefreshListener {
-            if(mOneList.size==0){
-                refreshList()
-            }else{
-                oneSwipe.finishRefresh(2000)
-            }
+            refreshList()
         }
         if(mOneList.size == 0){
             refreshList()
