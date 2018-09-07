@@ -34,6 +34,9 @@ class NetworkManager {
         val movieDetailUrl = host()+"/movie" //id/stroy/1/0
         val moviePosterUrl = host()+"/movie/detail" //id
         val keySearchUrl = host()+"/search" //channel/keyword
+        val weatherNowUrl = "https://api.seniverse.com/v3/weather/now.json?key=evcdesl1qyqtn1za&location="
+        val weatherNowadayUrl = "https://api.seniverse.com/v3/weather/daily.json?key=evcdesl1qyqtn1za&location="
+        val weatherSuggestUrl = "https://api.seniverse.com/v3/life/suggestion.json?key=evcdesl1qyqtn1za&location="
         /*channel包括6种类型：hp（图文） reading（阅读） music（音乐）
         movie（影视） radio（电台） author（作者/音乐人）
          */
@@ -218,6 +221,51 @@ class NetworkManager {
                     }
         }
 
+        fun getWeatherNow(location:String,complete:(weatherNow:WeatherNow?,error:FuelError?)->Unit){
+            FuelManager.instance.request(Method.GET, weatherNowUrl+location)
+                    .responseObject(WeatherNow.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data,null)
+                            }
+                        }
+                    }
+        }
+
+        fun getWeatherDaily(location:String,complete:(weatherDaily:WeatherDaily?,error:FuelError?)->Unit){
+            FuelManager.instance.request(Method.GET, weatherNowadayUrl+location)
+                    .responseObject(WeatherDaily.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data,null)
+                            }
+                        }
+                    }
+        }
+
+        fun getWeatherSuggestion(location:String,complete:(weatherSuggestion:WeatherSuggestion?,error:FuelError?)->Unit){
+            FuelManager.instance.request(Method.GET, weatherSuggestUrl+location)
+                    .responseObject(WeatherSuggestion.Deserializer()){request, response, result ->
+                        when(result){
+                            is Result.Failure->{
+                                complete(null,result.error)
+                            }
+                            is Result.Success->{
+                                val(data,err) = result
+                                complete(data,null)
+                            }
+                        }
+                    }
+        }
+
 
 
         fun getEssayList(response:String?):MutableList<EssayListItem>{
@@ -273,6 +321,8 @@ class NetworkManager {
             }
             return resList
         }
+
+
 
 
 

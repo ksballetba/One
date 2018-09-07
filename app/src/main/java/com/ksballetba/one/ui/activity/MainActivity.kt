@@ -1,8 +1,10 @@
 package com.ksballetba.one.ui.activity
 
+import android.Manifest
 import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.location.LocationListener
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -25,22 +27,61 @@ import android.view.View
 import android.support.v7.widget.SearchView
 import android.view.KeyEvent
 import android.widget.ImageView
-import com.ksballetba.one.ui.fragment.*
-import android.widget.LinearLayout
+import com.ksballetba.one.ui.fragment.*import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import com.amap.api.location.AMapLocationClient
+import com.amap.api.location.AMapLocationClientOption
+import com.amap.api.location.AMapLocationListener
+import com.ksballetba.one.tools.network.NetworkManager
 import org.jetbrains.anko.imageResource
+import org.jetbrains.anko.toast
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.RuntimePermissions
 
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        const val PERMISSISON_CODE = 100
+    }
 
     val fragmentList = ArrayList<Fragment>()
     lateinit var oneFragment:OneFragment
     lateinit var readFragment: ReadFragment
     lateinit var musicFragment:MusicFragment
     lateinit var movieFragment:MovieFragment
+    lateinit var oneLocation:TextView
+    lateinit var mLocationClient:AMapLocationClient
+    lateinit var mLocationOption:AMapLocationClientOption
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (intent.flags and Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT != 0) {
+            finish()
+            return
+        }
         setContentView(R.layout.activity_main)
+        oneLocation = findViewById(R.id.one_location)
+        mLocationClient = AMapLocationClient(applicationContext)
+        val mLocationListener = AMapLocationListener{aMapLocation ->
+            if(aMapLocation!=null){
+                if(aMapLocation.errorCode ==0){
+                    NetworkManager.getWeatherNow(aMapLocation.city.toString().substring(0,2)){weatherNow, error ->
+                        if(error==null){
+                            oneLocation.text = "${aMapLocation.city.toString().substring(0,2)}·${weatherNow!!.results[0].now?.text} ${weatherNow!!.results[0].now?.temperature}℃"
+                        }
+                    }
+                } else{
+                    Log.d("debug",aMapLocation.errorInfo)
+                }
+                mLocationClient.stopLocation()
+            }
+        }
+        mLocationClient.setLocationListener(mLocationListener)
         init()
     }
 
@@ -55,11 +96,26 @@ class MainActivity : AppCompatActivity() {
         fragmentList.add(readFragment)
         fragmentList.add(musicFragment)
         fragmentList.add(movieFragment)
+        requestPermissions()
         main_viewpager.offscreenPageLimit = 4
         main_viewpager.adapter = KotlinPagerAdapter(fragmentList,supportFragmentManager)
         main_bottomnav.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
+    private fun initLocation(){
+        mLocationOption = AMapLocationClientOption()
+        mLocationOption.locationPurpose = AMapLocationClientOption.AMapLocationPurpose.SignIn
+        mLocationOption.locationMode=AMapLocationClientOption.AMapLocationMode.Battery_Saving
+        mLocationOption.isOnceLocation = true
+        mLocationOption.isOnceLocationLatest = true
+        mLocationOption.isNeedAddress = true
+        mLocationOption.httpTimeOut = 20000
+        if (null!=mLocationClient){
+            mLocationClient.setLocationOption(mLocationOption)
+            mLocationClient.stopLocation()
+            mLocationClient.startLocation()
+        }
+    }
 
 
     private val mOnNavigationItemSelectedListener = object : BottomNavigationView.OnNavigationItemSelectedListener {
@@ -99,6 +155,23 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onKeyDown(keyCode, event)
     }
+
+    @AfterPermissionGranted(PERMISSISON_CODE)
+    private fun requestPermissions(){
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)){
+            initLocation()
+        } else{
+            EasyPermissions.requestPermissions(this,"需要获取权限" ,
+                    PERMISSISON_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
 }
 
 
@@ -139,4 +212,6 @@ class KotlinPagerAdapter(var mList : List<Fragment>, fm: FragmentManager?) : Fra
     }
 
 }
+
+
 
