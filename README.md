@@ -1,5 +1,5 @@
 # One
-使用ONE API进行MD化的一个应用
+使用ONE API进行MD化的一个应用，使用kotlin进行开发
 
 
 ### ScreenShots
